@@ -36,7 +36,7 @@ export default function Contact() {
     {
       icon: <Mail size={18} />,
       value: "hashirbutt303@gmail.com",
-      link: "https://mail.google.com/mail/?view=cm&fs=1&to=hashirbutt303@gmail.com&su=Portfolio%20Contact&body=Hi%20Hashir,"
+      link: "mailto:hashirbutt303@gmail.com"
     },
     {
       icon: <MapPin size={18} />,
