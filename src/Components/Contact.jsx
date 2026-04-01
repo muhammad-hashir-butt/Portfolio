@@ -27,8 +27,12 @@ export default function Contact() {
   }, []);
 
   const contactInfo = [
-    { icon: <Mail size={18} />, value: "hashirbutt303@gmail.com" },
-    { icon: <MapPin size={18} />, value: "Lahore, Pakistan" },
+    { 
+      icon: <Mail size={18} />, 
+      value: "hashirbutt303@gmail.com", 
+      link: "https://mail.google.com/mail/?view=cm&fs=1&to=hashirbutt303@gmail.com"// ✅ opens compose window
+    },
+    { icon: <MapPin size={18} />, value: "Karachi, Pakistan" },
   ];
 
   const handleSubmit = (e) => {
@@ -37,16 +41,15 @@ export default function Contact() {
 
     emailjs
       .sendForm(
-        "service_h95ekel",   // Your Service ID
-        "template_spqn2cf",  // Your Template ID
+        "service_h95ekel",
+        "template_spqn2cf",
         formRef.current,
-        "f7zFTJFOLxeIwQX3f"  // Your Public Key
+        "f7zFTJFOLxeIwQX3f"
       )
       .then(
-        (result) => {
+        () => {
           setStatus("success");
-          formRef.current.reset(); 
-          // 3 second baad button wapis normal ho jaye
+          formRef.current.reset();
           setTimeout(() => setStatus("idle"), 3000);
         },
         (error) => {
@@ -72,17 +75,39 @@ export default function Contact() {
             <span className="bg-gradient-to-r from-blue-400 to-blue-200 text-transparent bg-clip-text italic">Connect</span>
           </h2>
           <p className="text-xs uppercase tracking-[0.3em] text-blue-200/40">Ready to build something amazing</p>
+
           <div className="space-y-6">
             {contactInfo.map((item, i) => (
               <motion.div key={i} whileHover={{ x: 5 }} className="flex items-center gap-4 justify-center lg:justify-start">
-                <div className="w-12 h-12 rounded-xl bg-blue-900/20 border border-blue-900/20 flex items-center justify-center hover:bg-blue-500/20 transition">{item.icon}</div>
-                <p className="text-blue-200/70">{item.value}</p>
+                {item.link ? (
+                  <a 
+                    href={item.link} 
+                    className="flex items-center gap-4 text-blue-200/70 hover:text-blue-400 transition-colors"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-blue-900/20 border border-blue-900/20 flex items-center justify-center hover:bg-blue-500/20 transition">
+                      {item.icon}
+                    </div>
+                    {item.value}
+                  </a>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-blue-900/20 border border-blue-900/20 flex items-center justify-center">
+                      {item.icon}
+                    </div>
+                    <p className="text-blue-200/70">{item.value}</p>
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
+
           <div className="flex gap-5 justify-center lg:justify-start">
-            <Github className="text-blue-200/40 hover:text-blue-400 cursor-pointer transition" />
-            <Linkedin className="text-blue-200/40 hover:text-blue-400 cursor-pointer transition" />
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <Github className="text-blue-200/40 hover:text-blue-400 transition" />
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+              <Linkedin className="text-blue-200/40 hover:text-blue-400 transition" />
+            </a>
           </div>
         </motion.div>
 
@@ -97,19 +122,16 @@ export default function Contact() {
         >
           <div className="grid md:grid-cols-2 gap-6">
             <div className="relative">
-              {/* ✅ name="from_name" matches template {{from_name}} */}
               <input type="text" name="from_name" required placeholder=" " className="peer w-full bg-transparent border-b border-blue-200/20 py-3 focus:outline-none focus:border-blue-400 transition" />
               <label className="absolute left-0 top-3 text-blue-200/40 peer-focus:-top-3 peer-focus:text-xs transition-all">Name</label>
             </div>
             <div className="relative">
-              {/* ✅ name="from_email" matches template {{from_email}} */}
               <input type="email" name="from_email" required placeholder=" " className="peer w-full bg-transparent border-b border-blue-200/20 py-3 focus:outline-none focus:border-blue-400 transition" />
               <label className="absolute left-0 top-3 text-blue-200/40 peer-focus:-top-3 peer-focus:text-xs transition-all">Email</label>
             </div>
           </div>
 
           <div className="relative">
-            {/* ✅ name="message" matches template {{message}} */}
             <textarea rows="4" name="message" required placeholder=" " className="peer w-full bg-transparent border-b border-blue-200/20 py-3 focus:outline-none focus:border-blue-400 transition resize-none" />
             <label className="absolute left-0 top-3 text-blue-200/40 peer-focus:-top-3 peer-focus:text-xs transition-all">Message</label>
           </div>
