@@ -8,6 +8,11 @@ export default function Contact() {
   const dotsContainerRef = useRef(null);
   const formRef = useRef(null);
 
+  // ✅ ENV VARIABLES
+  const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+  const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+  const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
   // 🔥 Background dots
   useEffect(() => {
     if (!dotsContainerRef.current) return;
@@ -31,7 +36,7 @@ export default function Contact() {
     }
   }, []);
 
-  // 🔥 Contact Info (Gmail compose OPEN)
+  // 🔥 Contact Info
   const contactInfo = [
     {
       icon: <Mail size={18} />,
@@ -44,17 +49,24 @@ export default function Contact() {
     },
   ];
 
-  // 🔥 Submit handler (EmailJS)
+  // 🔥 Submit handler (EmailJS with ENV)
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // ❗ Safety check
+    if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+      alert("Email service is not configured properly!");
+      return;
+    }
+
     setStatus("sending");
 
     emailjs
       .sendForm(
-        "service_h95ekel",     // ✅ your service ID
-        "template_spqn2cf",    // ✅ your template ID
+        SERVICE_ID,
+        TEMPLATE_ID,
         formRef.current,
-        "f7zFTJFOLxeIwQX3f"    // ✅ your public key
+        PUBLIC_KEY
       )
       .then(
         () => {
@@ -65,7 +77,7 @@ export default function Contact() {
         (error) => {
           console.log("Email error:", error.text);
           setStatus("idle");
-          alert("Failed to send message. Please try again.");
+          alert("Failed to send message. Try again.");
         }
       );
   };
@@ -163,49 +175,20 @@ export default function Contact() {
           className="lg:w-2/3 w-full bg-blue-900/20 border border-blue-900/20 backdrop-blur-2xl rounded-3xl p-8 md:p-12 space-y-8"
         >
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="relative">
-              <input
-                type="text"
-                name="from_name"
-                required
-                placeholder=" "
-                className="peer w-full bg-transparent border-b border-blue-200/20 py-3 focus:outline-none focus:border-blue-400"
-              />
-              <label className="absolute left-0 top-3 text-blue-200/40 peer-focus:-top-3 peer-focus:text-xs transition-all">
-                Name
-              </label>
-            </div>
+            <input type="text" name="from_name" required placeholder="Name"
+              className="bg-transparent border-b border-blue-200/20 py-3 focus:outline-none focus:border-blue-400" />
 
-            <div className="relative">
-              <input
-                type="email"
-                name="from_email"
-                required
-                placeholder=" "
-                className="peer w-full bg-transparent border-b border-blue-200/20 py-3 focus:outline-none focus:border-blue-400"
-              />
-              <label className="absolute left-0 top-3 text-blue-200/40 peer-focus:-top-3 peer-focus:text-xs transition-all">
-                Email
-              </label>
-            </div>
+            <input type="email" name="from_email" required placeholder="Email"
+              className="bg-transparent border-b border-blue-200/20 py-3 focus:outline-none focus:border-blue-400" />
           </div>
 
-          <div className="relative">
-            <textarea
-              rows="4"
-              name="message"
-              required
-              placeholder=" "
-              className="peer w-full bg-transparent border-b border-blue-200/20 py-3 focus:outline-none focus:border-blue-400 resize-none"
-            />
-            <label className="absolute left-0 top-3 text-blue-200/40 peer-focus:-top-3 peer-focus:text-xs transition-all">
-              Message
-            </label>
-          </div>
+          <textarea rows="4" name="message" required placeholder="Message"
+            className="w-full bg-transparent border-b border-blue-200/20 py-3 focus:outline-none focus:border-blue-400 resize-none"
+          />
 
           <button
             disabled={status !== "idle"}
-            className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-500 to-blue-400 text-white tracking-widest flex items-center justify-center gap-2 hover:scale-105 transition disabled:opacity-50"
+            className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-500 to-blue-400 flex items-center justify-center gap-2 hover:scale-105 transition disabled:opacity-50"
           >
             <AnimatePresence mode="wait">
               {status === "idle" ? (
